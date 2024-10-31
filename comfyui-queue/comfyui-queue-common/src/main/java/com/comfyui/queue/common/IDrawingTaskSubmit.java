@@ -14,4 +14,6 @@ public interface IDrawingTaskSubmit {
      * @return 是否成功
      */
     boolean submit(DrawingTaskInfo taskInfo);
+
+    void clear();
 }

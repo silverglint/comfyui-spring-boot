@@ -84,6 +84,11 @@ public class DrawingTaskRabbitService implements IDrawingTaskSubmit, ITaskProces
         }
     }
 
+    @Override
+    public void clear() {
+
+    }
+
     /**
      * 发送任务进度到mq
      *

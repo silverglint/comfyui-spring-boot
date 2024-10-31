@@ -6,13 +6,14 @@ import com.comfyui.queue.common.DrawingTaskInfo;
 import com.comfyui.queue.common.IDrawingTaskSubmit;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
  * 绘图任务队列管理者
+ *
  * @author Sun_12138
  */
 @Slf4j
@@ -22,7 +23,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
     /**
      * 任务队列
      */
-    private final LinkedBlockingQueue<DrawingTaskInfo> taskQueue;
+    private final ArrayDeque<DrawingTaskInfo> taskQueue;
 
     /**
      * 绘图任务执行者
@@ -34,7 +35,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
      */
     public DrawingTaskQueueService(DrawingTaskExecutor taskExecutor) {
         this.executorService = Executors.newSingleThreadExecutor();
-        this.taskQueue = new LinkedBlockingQueue<>();
+        this.taskQueue = new ArrayDeque<>();
         this.taskExecutor = taskExecutor;
         this.startTaskProcessing();
     }
@@ -47,7 +48,16 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
      */
     @Override
     public boolean submit(DrawingTaskInfo taskInfo) {
-        return taskQueue.offer(taskInfo);
+        if ("prepend".equals(taskInfo.getJoinType())) {
+            return taskQueue.offerFirst(taskInfo);
+        } else {
+            return taskQueue.offer(taskInfo);
+        }
+    }
+
+    @Override
+    public void clear() {
+        taskQueue.clear();
     }
 
     /**
@@ -75,9 +85,9 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
                     //执行绘图任务
                     taskExecutor.execDrawingTask(taskId, flow, timeout, unit);
                     //出队该任务
-                    taskQueue.take();
+                    taskQueue.removeFirst();
                 }
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 // 重置中断状态
                 Thread.currentThread().interrupt();
                 //重启线程

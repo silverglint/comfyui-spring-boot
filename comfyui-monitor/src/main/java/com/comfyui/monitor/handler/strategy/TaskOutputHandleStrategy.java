@@ -1,8 +1,8 @@
 package com.comfyui.monitor.handler.strategy;
 
-import com.comfyui.common.utils.JsonUtils;
 import com.comfyui.common.entity.ComfyTaskImage;
 import com.comfyui.common.process.ComfyTaskOutput;
+import com.comfyui.common.utils.JsonUtils;
 import com.comfyui.monitor.enums.ComfyWebSocketMessageType;
 import com.comfyui.monitor.handler.TaskProcessContext;
 import com.comfyui.monitor.message.TaskProcessSender;
@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * 任务输出的图片
+ *
  * @author Sun_12138
  */
 @Component
@@ -31,6 +32,7 @@ public class TaskOutputHandleStrategy implements IComfyWebSocketTextHandleStrate
     public void handleMessage(ComfyWebSocketMessageType msgType, JsonNode dataNode, TaskProcessSender processSender, TaskProcessContext ctx) {
         String nodeId = dataNode.get("node").asText();
         JsonNode imagesNode = dataNode.get("output").get("images");
+        if (imagesNode == null) return;
         //获取上下文输出的图片信息
         List<ComfyTaskImage> outputImagesContext = ctx.getOutputImages();
         List<ComfyTaskImage> currentOutputImages = new ArrayList<>();
