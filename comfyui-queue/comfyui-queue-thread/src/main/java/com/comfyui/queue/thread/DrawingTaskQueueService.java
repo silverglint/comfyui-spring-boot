@@ -85,7 +85,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
                     //执行绘图任务
                     taskExecutor.execDrawingTask(taskId, flow, timeout, unit);
                     //出队该任务
-                    taskQueue.removeFirst();
+                    taskQueue.remove(taskInfo);
                 }
             } catch (Exception e) {
                 // 重置中断状态

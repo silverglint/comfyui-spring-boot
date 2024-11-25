@@ -15,7 +15,7 @@
 
     <name>comfyui-spring-boot</name>
     <description>Spring Boot Support for ComfyUI</description>
-    <url>https://github.com/Sun-12138/comfyui-spring-boot</url>
+    <url>https://github.com/silverglint/comfyui-spring-boot</url>
 
     <licenses>
         <license>
@@ -47,13 +47,6 @@
         <module>comfyui-spring-boot-autoconfigure-monitor</module>
         <module>comfyui-spring-boot-starter-monitor</module>
     </modules>
-
-    <scm>
-        <connection>https://github.com/Sun-12138/comfyui-spring-boot.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/Sun-12138/comfyui-spring-boot.git
-        </developerConnection>
-        <url>https://github.com/Sun-12138/comfyui-spring-boot</url>
-    </scm>
 
     <properties>
         <java.version>8</java.version>
@@ -254,25 +247,6 @@
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- gpg密钥插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <configuration>
-                    <executable>D:\GnuPG\bin\gpg.exe</executable>
-                    <keyname>io.github.sun-12138</keyname>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>

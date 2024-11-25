@@ -41,6 +41,10 @@ public enum ComfyWebSocketMessageType {
      */
     COMPLETE("execution_success"),
     /**
+     * 任务失败
+     */
+    EXECUTION_ERROR("execution_error"),
+    /**
      * 系统队列任务数量更新
      */
     TASK_NUMBER("status"),

@@ -19,7 +19,7 @@ public class ComfyWorkFlowNode {
      * 节点唯一标识符
      */
     @JsonIgnore
-    private final Integer id;
+    private final String id;
 
     /**
      * 节点标题名
@@ -44,7 +44,7 @@ public class ComfyWorkFlowNode {
      * @param inputs    节点数值参数输入 key为参数名 value为输入值
      */
     @ConstructorProperties({"id", "title", "class_type", "inputs"})
-    public ComfyWorkFlowNode(Integer id, String title, String classType, Map<String, Object> inputs) {
+    public ComfyWorkFlowNode(String id, String title, String classType, Map<String, Object> inputs) {
         this.id = id;
         this.title = title;
         this.classType = classType;

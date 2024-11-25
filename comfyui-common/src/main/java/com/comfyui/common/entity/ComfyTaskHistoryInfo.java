@@ -65,6 +65,9 @@ public class ComfyTaskHistoryInfo {
             while (it.hasNext()) {
                 String key = it.next();
                 JsonNode images = outputsNode.get(key).get("images");
+                if (images == null) {
+                    continue;
+                }
                 for (JsonNode image : images) {
                     ComfyTaskImage taskImage = JsonUtils.toObject(image, ComfyTaskImage.class);
                     imageList.add(taskImage);

@@ -78,9 +78,8 @@ public class ComfyWorkFlow {
             JsonNode root = p.readValueAsTree();
             nodes = new HashMap<>(root.size());
             root.fieldNames().forEachRemaining(field -> {
-                Integer nodeId = Integer.valueOf(field);
                 JsonNode nodeValue = root.get(field);
-                ComfyWorkFlowNode newNode = deserializeWorkFlowNode(nodeId, nodeValue);
+                ComfyWorkFlowNode newNode = deserializeWorkFlowNode(field, nodeValue);
                 nodes.put(field, newNode);
             });
             return new ComfyWorkFlow(nodes);
@@ -93,7 +92,7 @@ public class ComfyWorkFlow {
          * @param node   需要转换的节点
          * @return {@link ComfyWorkFlowNode}对象
          */
-        private ComfyWorkFlowNode deserializeWorkFlowNode(Integer nodeId, JsonNode node) {
+        private ComfyWorkFlowNode deserializeWorkFlowNode(String nodeId, JsonNode node) {
             String title = node.get("_meta").get("title").asText();
             String classType = node.get("class_type").asText();
             //解析节点输出参数
