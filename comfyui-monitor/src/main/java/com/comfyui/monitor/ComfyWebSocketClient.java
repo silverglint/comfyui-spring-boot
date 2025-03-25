@@ -1,13 +1,13 @@
 package com.comfyui.monitor;
 
 import com.comfyui.api.ComfyApiClient;
-import com.comfyui.common.utils.JsonUtils;
 import com.comfyui.common.entity.ComfyTaskQueueStatus;
 import com.comfyui.common.entity.ComfyWorkFlow;
+import com.comfyui.common.utils.JsonUtils;
 import com.comfyui.monitor.enums.ComfyWebSocketMessageType;
 import com.comfyui.monitor.exceptions.TaskErrorException;
-import com.comfyui.monitor.handler.TaskProcessContext;
 import com.comfyui.monitor.handler.ComfyWebSocketMessageHandler;
+import com.comfyui.monitor.handler.TaskProcessContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.java_websocket.client.WebSocketClient;
@@ -227,7 +227,7 @@ public class ComfyWebSocketClient extends WebSocketClient {
             return;
         }
         //重试间隔时间 单位：毫秒
-        long reconnectInterval = 5000;
+        long reconnectInterval = 10000;
         this.retryConnect(this, reconnectInterval);
     }
 
@@ -242,18 +242,19 @@ public class ComfyWebSocketClient extends WebSocketClient {
      * @param timeout 重试间隔 单位：毫秒
      */
     private void retryConnect(WebSocketClient client, long timeout) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.submit(() -> {
-            reconnectAttempts++;
-            //最大重连尝试次数
-            log.error("连接{}失败, 第{}尝试重新连接", uri, reconnectAttempts);
-            try {
-                //等待一段时间后再尝试重连
-                Thread.sleep(timeout);
-                client.reconnect();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
+        try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
+            executorService.submit(() -> {
+                reconnectAttempts++;
+                //最大重连尝试次数
+                log.error("连接{}失败, 第{}尝试重新连接", uri, reconnectAttempts);
+                try {
+                    //等待一段时间后再尝试重连
+                    Thread.sleep(timeout);
+                    client.reconnect();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        }
     }
 }
