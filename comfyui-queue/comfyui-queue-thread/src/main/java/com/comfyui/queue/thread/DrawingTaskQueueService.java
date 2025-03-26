@@ -54,7 +54,9 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
             result = taskQueue.offer(taskInfo);
         }
         if (result) {
-            taskQueue.notify(); // 通知等待线程
+            synchronized (taskQueue) {
+                taskQueue.notify(); // 通知等待线程
+            }
         }
         return result;
     }
