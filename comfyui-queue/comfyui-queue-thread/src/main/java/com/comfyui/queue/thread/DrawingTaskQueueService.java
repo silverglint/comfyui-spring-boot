@@ -17,19 +17,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class DrawingTaskQueueService implements IDrawingTaskSubmit {
+    private static final int MAX_RETRIES = 3; // 最大重试次数
     private final ExecutorService executorService;
-
     /**
      * 任务队列
      */
     private final ArrayDeque<DrawingTaskInfo> taskQueue;
-
     /**
      * 绘图任务执行者
      */
     private final DrawingTaskExecutor taskExecutor;
-
-    private static final int MAX_RETRIES = 3; // 最大重试次数
     private final AtomicInteger retryCount = new AtomicInteger(0); // 当前线程的重试计数器
 
     /**
@@ -50,18 +47,16 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
      */
     @Override
     public boolean submit(DrawingTaskInfo taskInfo) {
-        synchronized (taskQueue) {
-            boolean result;
-            if ("prepend".equals(taskInfo.getJoinType())) {
-                result = taskQueue.offerFirst(taskInfo);
-            } else {
-                result = taskQueue.offer(taskInfo);
-            }
-            if (result) {
-                taskQueue.notify(); // 通知等待线程
-            }
-            return result;
+        boolean result;
+        if ("prepend".equals(taskInfo.getJoinType())) {
+            result = taskQueue.offerFirst(taskInfo);
+        } else {
+            result = taskQueue.offer(taskInfo);
         }
+        if (result) {
+            taskQueue.notify(); // 通知等待线程
+        }
+        return result;
     }
 
     @Override
