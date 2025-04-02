@@ -23,6 +23,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
      * 任务队列
      */
     private final ArrayDeque<DrawingTaskInfo> taskQueue;
+
     /**
      * 绘图任务执行者
      */
@@ -47,18 +48,11 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
      */
     @Override
     public boolean submit(DrawingTaskInfo taskInfo) {
-        boolean result;
         if ("prepend".equals(taskInfo.getJoinType())) {
-            result = taskQueue.offerFirst(taskInfo);
+            return taskQueue.offerFirst(taskInfo);
         } else {
-            result = taskQueue.offer(taskInfo);
+            return taskQueue.offer(taskInfo);
         }
-        if (result) {
-            synchronized (taskQueue) {
-                taskQueue.notify(); // 通知等待线程
-            }
-        }
-        return result;
     }
 
     @Override
@@ -87,13 +81,9 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
      * 处理任务队列
      */
     private void processTaskQueue() {
-        while (true) { // 保留循环，但通过条件等待优化
+        while (true) {
             try {
                 synchronized (taskQueue) {
-                    // 等待直到队列非空
-                    while (taskQueue.isEmpty()) {
-                        taskQueue.wait(); // 阻塞线程
-                    }
                     // 取出并执行任务
                     DrawingTaskInfo taskInfo = taskQueue.poll();
                     if (taskInfo == null) continue;
@@ -104,11 +94,6 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
                             taskInfo.getUnit()
                     );
                 }
-            } catch (InterruptedException e) {
-                // 主动退出循环
-                Thread.currentThread().interrupt();
-                log.warn("线程被中断，退出任务处理循环");
-                break;
             } catch (Exception e) {
                 handleException(e);
                 break;
