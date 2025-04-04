@@ -5,9 +5,9 @@ import com.comfyui.queue.common.DrawingTaskInfo;
 import com.comfyui.queue.common.IDrawingTaskSubmit;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,7 +22,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
     /**
      * 任务队列
      */
-    private final ArrayDeque<DrawingTaskInfo> taskQueue;
+    private final LinkedBlockingDeque<DrawingTaskInfo> taskQueue;
 
     /**
      * 绘图任务执行者
@@ -35,7 +35,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
      */
     public DrawingTaskQueueService(DrawingTaskExecutor taskExecutor) {
         this.executorService = Executors.newSingleThreadExecutor();
-        this.taskQueue = new ArrayDeque<>();
+        this.taskQueue = new LinkedBlockingDeque<>();
         this.taskExecutor = taskExecutor;
         this.startTaskProcessing();
     }
@@ -85,8 +85,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
             try {
                 synchronized (taskQueue) {
                     // 取出并执行任务
-                    DrawingTaskInfo taskInfo = taskQueue.poll();
-                    if (taskInfo == null) continue;
+                    DrawingTaskInfo taskInfo = taskQueue.takeFirst();
                     taskExecutor.execDrawingTask(
                             taskInfo.getTaskId(),
                             taskInfo.getFlow(),
