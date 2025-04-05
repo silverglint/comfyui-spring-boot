@@ -175,4 +175,8 @@ public class DrawingTaskRabbitService implements IDrawingTaskSubmit, ITaskProces
     @Override
     public void systemPerformance(ComfySystemPerformance performance) {
     }
+
+    @Override
+    public void queneNumberUpdate(QueneNumber queneNumber) {
+    }
 }

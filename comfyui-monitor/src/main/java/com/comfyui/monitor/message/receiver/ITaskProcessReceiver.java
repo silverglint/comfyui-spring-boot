@@ -1,6 +1,14 @@
 package com.comfyui.monitor.message.receiver;
 
-import com.comfyui.common.process.*;
+import com.comfyui.common.process.ComfySystemPerformance;
+import com.comfyui.common.process.ComfyTaskComplete;
+import com.comfyui.common.process.ComfyTaskError;
+import com.comfyui.common.process.ComfyTaskNodeProgress;
+import com.comfyui.common.process.ComfyTaskNumber;
+import com.comfyui.common.process.ComfyTaskOutput;
+import com.comfyui.common.process.ComfyTaskProgressPreview;
+import com.comfyui.common.process.ComfyTaskStart;
+import com.comfyui.common.process.QueneNumber;
 
 /**
  * ComfyUI WebSocket策略者处理结果接收者
@@ -63,4 +71,11 @@ public interface ITaskProcessReceiver {
      * @param performance 系统状态
      */
     void systemPerformance(ComfySystemPerformance performance);
+
+    /**
+     * 队列任务个数更新
+     *
+     * @param queneNumber 队列任务信息
+     */
+    void queneNumberUpdate(QueneNumber queneNumber);
 }

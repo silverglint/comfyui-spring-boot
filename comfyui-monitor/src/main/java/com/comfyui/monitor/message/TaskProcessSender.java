@@ -123,4 +123,14 @@ public class TaskProcessSender implements ITaskProcessReceiver {
     public void systemPerformance(ComfySystemPerformance performance) {
         receivers.forEach(handler -> handler.systemPerformance(performance));
     }
+
+    /**
+     * 绘图队列任务个数更新
+     *
+     * @param queneNumber 队列任务信息
+     */
+    @Override
+    public void queneNumberUpdate(QueneNumber queneNumber) {
+        receivers.forEach(handler -> handler.queneNumberUpdate(queneNumber));
+    }
 }

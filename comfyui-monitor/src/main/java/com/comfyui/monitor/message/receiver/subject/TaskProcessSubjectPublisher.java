@@ -1,7 +1,16 @@
 package com.comfyui.monitor.message.receiver.subject;
 
 import com.comfyui.annotation.enums.TaskProcessType;
-import com.comfyui.common.process.*;
+import com.comfyui.common.process.ComfySystemPerformance;
+import com.comfyui.common.process.ComfyTaskComplete;
+import com.comfyui.common.process.ComfyTaskError;
+import com.comfyui.common.process.ComfyTaskNodeProgress;
+import com.comfyui.common.process.ComfyTaskNumber;
+import com.comfyui.common.process.ComfyTaskOutput;
+import com.comfyui.common.process.ComfyTaskProgressPreview;
+import com.comfyui.common.process.ComfyTaskStart;
+import com.comfyui.common.process.IComfyTaskProcess;
+import com.comfyui.common.process.QueneNumber;
 import com.comfyui.monitor.message.receiver.ITaskProcessReceiver;
 import com.comfyui.monitor.message.receiver.TaskProcessMessage;
 import lombok.RequiredArgsConstructor;
@@ -92,6 +101,16 @@ public final class TaskProcessSubjectPublisher implements ITaskProcessReceiver, 
     @Override
     public void systemPerformance(ComfySystemPerformance performance) {
         publishSubject(TaskProcessType.SYSTEM_PERFORMANCE, performance);
+    }
+
+    /**
+     * 绘图队列任务个数更新
+     *
+     * @param queneNumber 队列任务信息
+     */
+    @Override
+    public void queneNumberUpdate(QueneNumber queneNumber) {
+        publishSubject(TaskProcessType.QUEUE_NUMBER_UPDATE, queneNumber);
     }
 
     /**

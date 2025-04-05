@@ -1,5 +1,8 @@
 package com.comfyui.queue.thread;
 
+import com.comfyui.common.process.ComfyTaskNumber;
+import com.comfyui.common.process.QueneNumber;
+import com.comfyui.monitor.message.TaskProcessSender;
 import com.comfyui.queue.common.DrawingTaskExecutor;
 import com.comfyui.queue.common.DrawingTaskInfo;
 import com.comfyui.queue.common.IDrawingTaskSubmit;
@@ -19,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DrawingTaskQueueService implements IDrawingTaskSubmit {
     private static final int MAX_RETRIES = 3; // 最大重试次数
     private final ExecutorService executorService;
+
+    private final TaskProcessSender taskProcessSender;
     /**
      * 任务队列
      */
@@ -33,10 +38,11 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
     /**
      * @param taskExecutor 绘图任务执行者
      */
-    public DrawingTaskQueueService(DrawingTaskExecutor taskExecutor) {
+    public DrawingTaskQueueService(DrawingTaskExecutor taskExecutor,TaskProcessSender taskProcessSender) {
         this.executorService = Executors.newSingleThreadExecutor();
         this.taskQueue = new LinkedBlockingDeque<>();
         this.taskExecutor = taskExecutor;
+        this.taskProcessSender = taskProcessSender;
         this.startTaskProcessing();
     }
 
@@ -58,6 +64,7 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
     @Override
     public void clear() {
         taskQueue.clear();
+        taskProcessSender.taskNumberUpdate(new ComfyTaskNumber(0));
     }
 
     /**
@@ -86,12 +93,14 @@ public class DrawingTaskQueueService implements IDrawingTaskSubmit {
                 synchronized (taskQueue) {
                     // 取出并执行任务
                     DrawingTaskInfo taskInfo = taskQueue.takeFirst();
+                    taskProcessSender.queneNumberUpdate(new QueneNumber(taskQueue.size() + 1));
                     taskExecutor.execDrawingTask(
                             taskInfo.getTaskId(),
                             taskInfo.getFlow(),
                             taskInfo.getTimeout(),
                             taskInfo.getUnit()
                     );
+                    taskProcessSender.queneNumberUpdate(new QueneNumber(taskQueue.size()));
                 }
             } catch (Exception e) {
                 handleException(e);

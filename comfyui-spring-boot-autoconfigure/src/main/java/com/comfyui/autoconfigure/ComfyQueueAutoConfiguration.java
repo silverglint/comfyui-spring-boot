@@ -46,8 +46,9 @@ public class ComfyQueueAutoConfiguration {
      */
     @Bean
     @ConditionalOnProperty(name = ComfyQueueProperties.PREFIX + ".type", havingValue = "thread")
-    public IDrawingTaskSubmit queueTaskSubmitStrategy(DrawingTaskExecutor drawingTaskExecutor) {
+    public IDrawingTaskSubmit queueTaskSubmitStrategy(DrawingTaskExecutor drawingTaskExecutor,
+                                                      TaskProcessSender taskProcessSender) {
         log.info("ComfyUITaskQueue: thread");
-        return new DrawingTaskQueueService(drawingTaskExecutor);
+        return new DrawingTaskQueueService(drawingTaskExecutor, taskProcessSender);
     }
 }

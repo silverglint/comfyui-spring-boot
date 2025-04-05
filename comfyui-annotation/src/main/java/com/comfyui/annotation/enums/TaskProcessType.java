@@ -1,6 +1,15 @@
 package com.comfyui.annotation.enums;
 
-import com.comfyui.common.process.*;
+import com.comfyui.common.process.ComfySystemPerformance;
+import com.comfyui.common.process.ComfyTaskComplete;
+import com.comfyui.common.process.ComfyTaskError;
+import com.comfyui.common.process.ComfyTaskNodeProgress;
+import com.comfyui.common.process.ComfyTaskNumber;
+import com.comfyui.common.process.ComfyTaskOutput;
+import com.comfyui.common.process.ComfyTaskProgressPreview;
+import com.comfyui.common.process.ComfyTaskStart;
+import com.comfyui.common.process.IComfyTaskProcess;
+import com.comfyui.common.process.QueneNumber;
 import lombok.Getter;
 
 /**
@@ -40,7 +49,11 @@ public enum TaskProcessType {
     /**
      * 系统状态更新
      */
-    SYSTEM_PERFORMANCE(ComfySystemPerformance.class);
+    SYSTEM_PERFORMANCE(ComfySystemPerformance.class),
+    /**
+     * 队列数量更新
+     */
+    QUEUE_NUMBER_UPDATE(QueneNumber.class);
 
     /**
      * 对应的实体类类型
